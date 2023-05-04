@@ -25,11 +25,10 @@ jobs:
 
       - name: Build all for deploy
         run: |
-          docker build -t graljo/multi-client -f ./client .
-          docker build -t graljo/multi-nginx -f ./nginx .
-          docker build -t graljo/multi-server-f ./server .
-          docker build -t graljo/multi-worker -f ./worker .
-
+          docker build -t graljo/multi-client ./client
+          docker build -t graljo/multi-nginx ./nginx
+          docker build -t graljo/multi-server ./server
+          docker build -t graljo/multi-worker ./worker
 
 #      - name: Generate deployment package
 #        run: zip -r deploy.zip . -x '*.git*'
