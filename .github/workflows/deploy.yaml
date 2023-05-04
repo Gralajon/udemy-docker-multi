@@ -10,22 +10,38 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - run: docker login -u ${{ vars.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - run: docker build -t ${{ vars.REPO_NAME }} -f ${{ vars.DOCKER_FILE }} .
-      - run: docker run -e CI=true ${{ vars.REPO_NAME }} npm test
- 
-      - name: Generate deployment package
-        run: zip -r deploy.zip . -x '*.git*'
- 
-      - name: Deploy to EB
-        uses: einaregilsson/beanstalk-deploy@v18
-        with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
-          aws_secret_key: "${{ secrets.AWS_SECRET_KEY }}"
-          application_name: "Udemy Docker React"
-          environment_name: Udemydockermulti-env
-          existing_bucket_name: "elasticbeanstalk-us-west-1-565295202784"
-          region: us-west-1
-          version_label: ${{ github.sha }}
-          deployment_package: deploy.zip
+      - 
+        name: Checkout
+        uses: actions/checkout@v2
+      - 
+        name: docker login
+        run: docker login -u ${{ env.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        env: 
+          DOCKER_USERNAME: 
+          DOCKER_PASSWORD: ${{ }}
+      - name: docker build client for test
+        run: docker build -t graljo/multi-client-test -f ./client/Dockerfile.dev .
+      -
+        name: docker run client test
+        run: docker run -e CI=true graljo/multi-client-test npm test
+
+      - name: Build all for deploy
+        run: docker build -t graljo/multi-client -f ./client .
+        run: docker build -t graljo/multi-nginx -f ./nginx .
+        run: docker build -t graljo/multi-server-f ./server .
+        run: docker build -t graljo/multi-worker -f ./worker .
+
+#      - name: Generate deployment package
+#        run: zip -r deploy.zip . -x '*.git*'
+
+#      - name: Deploy to EB
+#        uses: einaregilsson/beanstalk-deploy@v18
+#        with:
+#          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+#          aws_secret_key: "${{ secrets.AWS_SECRET_KEY }}"
+#          application_name: "Udemy Docker React"
+#          environment_name: Udemydockermulti-env
+#          existing_bucket_name: "elasticbeanstalk-us-west-1-565295202784"
+#          region: us-west-1
+#          version_label: ${{ github.sha }}
+#          deployment_package: deploy.zip
