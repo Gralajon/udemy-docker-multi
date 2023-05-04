@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: docker login -u ${{ vars.DOCKER_USERNAME }} -p ${{ vars.DOCKER_PASSWORD }}
+      - run: docker login -u ${{ vars.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - run: docker build -t ${{ vars.IMAGE_NAME }} -f ${{ vars.DOCKER_FILE }} .
       - run: docker run -e CI=true ${{ vars.IMAGE_NAME }} npm test
  
