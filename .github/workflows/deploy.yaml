@@ -24,10 +24,12 @@ jobs:
         run: docker run -e CI=true graljo/multi-client-test npm test
 
       - name: Build all for deploy
-        run: docker build -t graljo/multi-client -f ./client .
-        run: docker build -t graljo/multi-nginx -f ./nginx .
-        run: docker build -t graljo/multi-server-f ./server .
-        run: docker build -t graljo/multi-worker -f ./worker .
+        run: |
+          docker build -t graljo/multi-client -f ./client .
+          docker build -t graljo/multi-nginx -f ./nginx .
+          docker build -t graljo/multi-server-f ./server .
+          docker build -t graljo/multi-worker -f ./worker .
+
 
 #      - name: Generate deployment package
 #        run: zip -r deploy.zip . -x '*.git*'
