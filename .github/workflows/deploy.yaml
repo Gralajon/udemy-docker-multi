@@ -27,7 +27,7 @@ jobs:
         run: docker build -t ${{ vars.DOCKER_USERNAME }}/multi-client-test -f ./client/Dockerfile.dev ./client
       -
         name: docker run client test
-        run: docker run -e CI=true graljo/multi-client-test npm test
+        run: docker run -e CI=true ${{ vars.DOCKER_USERNAME }}/multi-client-test npm test
 
       - name: Build and push all for deploy
         run: |
