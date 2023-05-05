@@ -24,7 +24,7 @@ jobs:
 #        run: docker login -u ${{ vars.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
       - name: docker build client for test
-        run: docker build -t graljo/multi-client-test -f ./client/Dockerfile.dev .
+        run: docker build -t graljo/multi-client-test -f ./client/Dockerfile.dev ./client
       -
         name: docker run client test
         run: docker run -e CI=true graljo/multi-client-test npm test
