@@ -13,9 +13,15 @@ jobs:
       - 
         name: Checkout
         uses: actions/checkout@v2
-      - 
-        name: docker login
-        run: docker login -u ${{ vars.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      -
+        name: docker login action
+        uses: docker/login-action@v2
+        with:
+          username: ${{ vars.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+#      - 
+#        name: docker login
+#        run: docker login -u ${{ vars.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
       - name: docker build client for test
         run: docker build -t graljo/multi-client-test -f ./client/Dockerfile.dev .
@@ -23,12 +29,16 @@ jobs:
         name: docker run client test
         run: docker run -e CI=true graljo/multi-client-test npm test
 
-      - name: Build all for deploy
+      - name: Build and push all for deploy
         run: |
           docker build -t graljo/multi-client ./client
           docker build -t graljo/multi-nginx ./nginx
           docker build -t graljo/multi-server ./server
           docker build -t graljo/multi-worker ./worker
+          docker push graljo/multi-client
+          docker push graljo/multi-nginx
+          docker push graljo/multi-server
+          docker push graljo/multi-worker
 
 #      - name: Generate deployment package
 #        run: zip -r deploy.zip . -x '*.git*'
