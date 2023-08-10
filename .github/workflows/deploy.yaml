@@ -41,6 +41,13 @@ jobs:
           docker run -e CI=true
           ${{ vars.DOCKER_USERNAME }}/multi-client-test npm test
 
+      # -
+      #   name: Client build and push
+      #   uses: docker/build-push-action
+      #   with: 
+      #     context: ./client
+
+
       - name: Build and push all for deploy
         run: |
           docker build -t ${{ vars.DOCKER_USERNAME }}/multi-client ./client
@@ -52,17 +59,17 @@ jobs:
           docker push ${{ vars.DOCKER_USERNAME }}/multi-server
           docker push ${{ vars.DOCKER_USERNAME }}/multi-worker
 
-#      - name: Generate deployment package
-#        run: zip -r deploy.zip . -x '*.git*'
+      - name: Generate deployment package
+        run: zip -r deploy.zip . -x '*.git*'
 
-#      - name: Deploy to EB
-#        uses: einaregilsson/beanstalk-deploy@v18
-#        with:
-#          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
-#          aws_secret_key: "${{ secrets.AWS_SECRET_KEY }}"
-#          application_name: "Udemy Docker Multi"
-#          environment_name: Udemydockermulti-env
-#          existing_bucket_name: "elasticbeanstalk-us-west-1-565295202784"
-#          region: us-west-1
-#          version_label: ${{ github.sha }}
-#          deployment_package: deploy.zip
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v18
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_secret_key: "${{ secrets.AWS_SECRET_KEY }}"
+          application_name: multi-docker-2
+          environment_name: Multi-docker-2-env
+          existing_bucket_name: "elasticbeanstalk-us-west-1-565295202784"
+          region: us-west-1
+          version_label: ${{ github.sha }}
+          deployment_package: deploy.zip
